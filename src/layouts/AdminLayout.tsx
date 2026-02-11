@@ -7,7 +7,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { Moon, Sun, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const AppLayout = ({ children }: { children: ReactNode }) => {
+export const AdminLayout = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
