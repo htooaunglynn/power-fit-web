@@ -8,7 +8,9 @@ import {
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const items = [
+import { useAuth } from "@/contexts/AuthContext";
+
+const adminItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Members", url: "/members", icon: Users },
   { title: "Trainers", url: "/trainers", icon: Dumbbell },
@@ -21,6 +23,24 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { user } = useAuth();
+
+  const getItems = () => {
+    if (!user) return [];
+    
+    switch (user.role) {
+      case "member":
+        return [{ title: "Dashboard", url: `/member/${user.id}`, icon: LayoutDashboard }];
+      case "trainer":
+        return [{ title: "Dashboard", url: `/trainer/${user.id}`, icon: LayoutDashboard }];
+      case "staff":
+        return [{ title: "Dashboard", url: `/staff-profile/${user.id}`, icon: LayoutDashboard }];
+      default:
+        return adminItems;
+    }
+  };
+
+  const items = getItems();
   return (
     <Sidebar>
       <div className="p-4 border-b border-sidebar-border">

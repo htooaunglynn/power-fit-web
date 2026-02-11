@@ -40,7 +40,19 @@ import StaffDashboard from "./pages/staff/StaffDashboard";
 
 import "@/styles/App.css";
 
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+
 const queryClient = new QueryClient();
+
+const DashboardRedirect = () => {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role === "member") return <Navigate to={`/member/${user.id}`} replace />;
+  if (user?.role === "trainer") return <Navigate to={`/trainer/${user.id}`} replace />;
+  if (user?.role === "staff") return <Navigate to={`/staff-profile/${user.id}`} replace />;
+  return <AdminLayout><Dashboard /></AdminLayout>;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -56,7 +68,7 @@ const App = () => (
               <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
               
               {/* Admin Routes */}
-              <Route path="/dashboard" element={<AdminRoute><AdminLayout><Dashboard /></AdminLayout></AdminRoute>} />
+              <Route path="/dashboard" element={<AdminRoute><DashboardRedirect /></AdminRoute>} />
               <Route path="/members" element={<AdminRoute><AdminLayout><Members /></AdminLayout></AdminRoute>} />
               <Route path="/trainers" element={<AdminRoute><AdminLayout><Trainers /></AdminLayout></AdminRoute>} />
               <Route path="/staff" element={<AdminRoute><AdminLayout><StaffPage /></AdminLayout></AdminRoute>} />
